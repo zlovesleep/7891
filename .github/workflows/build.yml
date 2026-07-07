@@ -1,0 +1,30 @@
+
+name: Build dylib
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build dylib
+        run: |
+          clang -arch arm64 -dynamiclib \
+            -framework Foundation \
+            -framework UIKit \
+            -framework Security \
+            -framework SystemConfiguration \
+            -mios-version-min=14.0 \
+            -o UniversalCrack.dylib \
+            UniversalCrack.m
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UniversalCrack.dylib
+          path: UniversalCrack.dylib
