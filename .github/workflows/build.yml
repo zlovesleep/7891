@@ -1,4 +1,3 @@
-
 name: Build dylib
 
 on:
@@ -14,12 +13,19 @@ jobs:
       
       - name: Build dylib
         run: |
-          clang -arch arm64 -dynamiclib \
+          # 找到 iOS SDK 路径
+          SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
+          echo "使用 SDK: $SDK_PATH"
+          
+          # 编译 dylib
+          clang -arch arm64 \
+            -dynamiclib \
+            -isysroot $SDK_PATH \
+            -mios-version-min=14.0 \
             -framework Foundation \
             -framework UIKit \
             -framework Security \
             -framework SystemConfiguration \
-            -mios-version-min=14.0 \
             -o UniversalCrack.dylib \
             UniversalCrack.m
       
